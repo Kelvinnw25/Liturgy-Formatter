@@ -18,7 +18,7 @@ export default function LiturgyPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/format-file', {
+      const res = await fetch('/api/format-file', {
         method: 'POST',
         body: formData,
       });
@@ -40,7 +40,7 @@ export default function LiturgyPage() {
   const handleFormat = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/format', {
+      const res = await fetch('/api/format', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: input }),

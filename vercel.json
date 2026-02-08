@@ -1,0 +1,19 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+        "source": "/api/:path*",
+        "destination": "/fastAPI/app/main.py"
+        }
+    ],
+    "builds": [
+        {
+        "src": "react/package.json",
+        "use": "@vercel/next"
+        },
+        {
+        "src": "fastAPI/app/main.py",
+        "use": "@vercel/python"
+        }
+    ]
+}
