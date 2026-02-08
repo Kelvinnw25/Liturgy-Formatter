@@ -1,6 +1,6 @@
-from fastapi.middleware.cors import CORSMiddleware # Tambahin ini
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from app.services.gemini_service import format_liturgy_text
+from services.gemini_service import format_liturgy_text
 from fastapi import FastAPI, UploadFile, File, HTTPException
 import docx
 import io
@@ -10,7 +10,7 @@ app = FastAPI()
 # middleware CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
