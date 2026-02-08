@@ -33,7 +33,11 @@ def format_liturgy_logic(raw_text):
     Strict Rules:
     1. Gunakan HANYA lirik yang ada di input. Jangan menambah lirik dari luar.
     2. Berikan label [Verse 1], [Chorus], [Coda], dll secara jelas.
-    3. Ikuti format persis seperti contoh ini (perhatikan juga enter spasi dan baris kosongnya):
+    3. JANGAN PERNAH memberikan penjelasan, saran, atau komentar apapun.
+    4. JANGAN PERNAH curhat kalau teks tidak jelas.
+    5. JIKA teks input adalah sampah/ngasal, cukup balas dengan: [Verse 1] (isi teks ngasal tadi).
+    6. HANYA keluarkan output teks hasil format.
+    7. Ikuti format persis seperti contoh ini (perhatikan juga enter spasi dan baris kosongnya):
     KJ 3 - Kami Puji Dengan Riang
     (blank line)
     (blank line)
