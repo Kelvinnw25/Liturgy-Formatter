@@ -5,7 +5,7 @@
         { "src": "fastAPI/app/main.py", "use": "@vercel/python" }
     ],
     "rewrites": [
-        { "source": "/api/:path*", "destination": "fastAPI/app/main.py" },
-        { "source": "/(.*)", "destination": "react/$1" } 
+        { "source": "/api/(.*)", "destination": "fastAPI/app/main.py" },
+        { "source": "/(.*)", "destination": "react/$1" }
     ]
 }
