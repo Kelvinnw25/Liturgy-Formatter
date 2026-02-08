@@ -1,13 +1,19 @@
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from services.gemini_service import format_liturgy_text
-from fastapi import FastAPI, UploadFile, File, HTTPException
+import google.generativeai as genai
 import docx
 import io
+import os
+from dotenv import load_dotenv
+
+# 1. SETUP GEMINI
+load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 app = FastAPI()
 
-# Middleware CORS - Izinkan semua biar aman di cloud
+# 2. MIDDLEWARE (Biar gak kena error CORS di Vercel)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,24 +24,63 @@ app.add_middleware(
 class LiturgyRequest(BaseModel):
     text: str
 
-# TAMBAHKAN /api di depan rute
-@app.post("/api/format") 
+# 3. FUNGSI LOGIKA (Pindahan dari gemini_service.py)
+def format_liturgy_logic(raw_text):
+    # Pake versi 2.5 yang lo bilang aman di lokal
+    model = genai.GenerativeModel('gemini-2.5-flash') 
+    prompt = f"""
+    Tugas: Rapikan teks liturgi berikut ke dalam format EasyWorship.
+    
+    Strict Rules:
+    1. Gunakan HANYA lirik yang ada di input. Jangan menambah lirik dari luar.
+    2. Berikan label [Verse 1], [Chorus], [Coda], dll secara jelas.
+    3. Ikuti format persis seperti contoh ini (perhatikan juga enter spasi dan baris kosongnya):
+    KJ 3 - Kami Puji Dengan Riang
+    (blank line)
+    (blank line)
+    Verse 1
+    Lirik...
+    (blank line)
+    Lirik...
+    (blank line)
+    Lirik...
+    (blank line)
+    (blank line)
+    Chorus
+    Lirik...
+    (blank line)
+    Lirik...
+    (blank line)
+    Lirik...
+    (blank line)
+    (blank line)
+    (blank line)
+    (blank line)
+    Teks Input:
+    {raw_text}
+    """
+    response = model.generate_content(prompt)
+    return response.text
+
+# 4. ENDPOINT API
+@app.post("/api/format") # Prefix /api wajib buat vercel.json
 async def process_liturgy(request: LiturgyRequest):
-    formatted_result = format_liturgy_text(request.text)
-    return {"formatted_text": formatted_result}
+    try:
+        result = format_liturgy_logic(request.text)
+        return {"formatted_text": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-# TAMBAHKAN /api di depan rute
-@app.post("/api/format-file")
+@app.post("/api/format-file") # Prefix /api wajib
 async def process_file(file: UploadFile = File(...)):
-    filename = file.filename.lower()
-    content = ""
-
-    if filename.endswith('.docx') or filename.endswith('.doc'):
+    if not (file.filename.lower().endswith('.docx') or file.filename.lower().endswith('.doc')):
+        return {"error": "Format file gak didukung, King!"}
+    
+    try:
         file_bytes = await file.read()
         doc = docx.Document(io.BytesIO(file_bytes))
         content = "\n".join([para.text for para in doc.paragraphs])
-    else:
-        return {"error": "Format file gak didukung, King!"}
-
-    formatted_result = format_liturgy_text(content)
-    return {"formatted_text": formatted_result}
+        result = format_liturgy_logic(content)
+        return {"formatted_text": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
