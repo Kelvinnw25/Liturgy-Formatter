@@ -20,22 +20,21 @@ Based on the current development environment:
 ```text
 LITURGY-FORMATTER/
 ├── fastAPI/                # Python Backend
-│   ├── app/
-│   │   ├── core/           # Core configurations
-│   │   ├── schemas/        # Pydantic data models
-│   │   ├── services/       
-│   │   │   └── gemini_service.py  # AI Logic
-│   │   └── main.py         # API Endpoints
-│   ├── .env                # API Keys (Private)
-│   └── requirements.txt    # Python dependencies
+│   └── app/
+│       ├── main.py         # API Endpoints & Gemini AI Logic
+│       ├── requirements.txt # Python dependencies (Vercel-ready)
+│       └── .env            # API Keys (Local only)
 ├── react/                  # Next.js Frontend
 │   ├── app/                # Main Application Pages
 │   │   ├── layout.tsx      # Global layout
-│   │   └── page.tsx        # UI Logic (The "Gaskan" Page)
+│   │   ├── page.tsx        # UI Logic (The "Gaskan" Page)
+│   │   └── globals.css     # Tailwind & Custom Styles
 │   ├── public/             # Static assets (icons/logos)
 │   ├── next.config.ts      # Next.js configuration
 │   └── package.json        # Frontend dependencies
 ├── samples/                # Sample liturgy files for testing
+├── vercel.json             # Vercel deployment configuration
+├── .gitignore              # Git ignore rules
 └── README.md
 
 ```

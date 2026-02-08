@@ -7,13 +7,13 @@ import io
 import os
 from dotenv import load_dotenv
 
-# 1. SETUP GEMINI
+#gemini api key setup
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 app = FastAPI()
 
-# 2. MIDDLEWARE (Biar gak kena error CORS di Vercel)
+#middleware to allow CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,9 +24,8 @@ app.add_middleware(
 class LiturgyRequest(BaseModel):
     text: str
 
-# 3. FUNGSI LOGIKA (Pindahan dari gemini_service.py)
+#logic function to format liturgy text
 def format_liturgy_logic(raw_text):
-    # Pake versi 2.5 yang lo bilang aman di lokal
     model = genai.GenerativeModel('gemini-2.5-flash') 
     prompt = f"""
     Tugas: Rapikan teks liturgi berikut ke dalam format EasyWorship.
@@ -62,8 +61,8 @@ def format_liturgy_logic(raw_text):
     response = model.generate_content(prompt)
     return response.text
 
-# 4. ENDPOINT API
-@app.post("/api/format") # Prefix /api wajib buat vercel.json
+#endpoint to process liturgy text
+@app.post("/api/format") #prefix /api should be used
 async def process_liturgy(request: LiturgyRequest):
     try:
         result = format_liturgy_logic(request.text)
@@ -71,7 +70,7 @@ async def process_liturgy(request: LiturgyRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/format-file") # Prefix /api wajib
+@app.post("/api/format-file") #prefix /api should be used
 async def process_file(file: UploadFile = File(...)):
     if not (file.filename.lower().endswith('.docx') or file.filename.lower().endswith('.doc')):
         return {"error": "Format file gak didukung, King!"}

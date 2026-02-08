@@ -7,12 +7,11 @@ export default function LiturgyPage() {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // function to handle file upload and read content
+  //function to handle file upload and read content
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Pake FormData buat kirim file binary
     const formData = new FormData();
     formData.append('file', file);
 
@@ -22,21 +21,28 @@ export default function LiturgyPage() {
         method: 'POST',
         body: formData,
       });
+
+      if (!res.ok) {
+        //catch specific errors
+        if (res.status === 404) throw new Error("Endpoint gak ketemu! Cek lagi vercel.json lo.");
+        if (res.status === 500) throw new Error("Server AI lagi pusing (Error 500). Cek Runtime Logs di Vercel.");
+        throw new Error(`Error: ${res.statusText}`);
+      }
+
       const data = await res.json();
-      
       if (data.formatted_text) {
         setOutput(data.formatted_text);
       } else {
-        alert(data.error);
+        alert(`Waduh: ${data.error || 'Gagal dapet hasil format.'}`);
       }
-    } catch (err) {
-      alert('Gagal nembak ke server!');
+    } catch (err: any) {
+      alert(`Gagal Upload: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // function to call FastAPI endpoint for formatting
+  //function to call FastAPI endpoint for formatting
   const handleFormat = async () => {
     setLoading(true);
     try {
@@ -45,16 +51,21 @@ export default function LiturgyPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: input }),
       });
+
+      if (!res.ok) {
+        throw new Error(`Server ngasih error ${res.status}. Kemungkinan API Key Gemini bermasalah.`);
+      }
+
       const data = await res.json();
       setOutput(data.formatted_text);
-    } catch (err) {
-      alert('Gagal! Pastiin FastAPI udah nyala di port 8000 ya.');
+    } catch (err: any) {
+      alert(`Gagal Format: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // function to download output as .txt file
+  //function to download output as .txt file
   const downloadResult = () => {
     if (!output) return;
     const element = document.createElement("a");
@@ -131,8 +142,8 @@ export default function LiturgyPage() {
             disabled={loading || !input}
             className={`w-full py-5 rounded-2xl font-black text-xl transition-all active:scale-[0.98] shadow-xl disabled:cursor-not-allowed text-white
               ${loading 
-                ? 'bg-orange-500' //Pas loading (Orange)
-                : (input ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-300') //Ada input (Ijo), Gak ada input (Abu-abu)
+                ? 'bg-orange-500' //loading (Orange)
+                : (input ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-300') //input (green), no input (grey)
               }`}
           >
             {loading ? 'SABAR YEEE...' : 'GASKAN KING!!!'}
