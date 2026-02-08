@@ -33,6 +33,9 @@ def format_liturgy_text(raw_text):
     (blank line)
     Lirik...
     (blank line)
+    (blank line)
+    (blank line)
+    (blank line)
     Teks Input:
     {raw_text}
     """

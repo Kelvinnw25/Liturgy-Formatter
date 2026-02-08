@@ -1,6 +1,6 @@
 # ⛪ Liturgy Formatter
 
-An AI-powered automation tool designed for church multimedia teams to instantly format liturgy text for **EasyWorship**. This project uses **Google Gemini 2.0 Flash** to transform raw lyrics or Word documents into structured slides.
+An AI-powered automation tool designed for church multimedia teams to instantly format liturgy text for **EasyWorship**. This project uses **Google Gemini 2.5 Flash** to transform raw lyrics or Word documents into structured slides.
 
 ---
 
