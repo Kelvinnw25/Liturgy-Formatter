@@ -2,5 +2,5 @@ fastapi
 uvicorn
 python-multipart
 python-docx
-google-genai
+google-generativeai==0.8.6
 python-dotenv

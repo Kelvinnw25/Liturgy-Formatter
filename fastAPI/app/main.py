@@ -7,7 +7,7 @@ import io
 
 app = FastAPI()
 
-# middleware CORS
+# Middleware CORS - Izinkan semua biar aman di cloud
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,22 +18,22 @@ app.add_middleware(
 class LiturgyRequest(BaseModel):
     text: str
 
-@app.post("/format")
+# TAMBAHKAN /api di depan rute
+@app.post("/api/format") 
 async def process_liturgy(request: LiturgyRequest):
     formatted_result = format_liturgy_text(request.text)
     return {"formatted_text": formatted_result}
 
-@app.post("/format-file")
+# TAMBAHKAN /api di depan rute
+@app.post("/api/format-file")
 async def process_file(file: UploadFile = File(...)):
     filename = file.filename.lower()
     content = ""
 
     if filename.endswith('.docx') or filename.endswith('.doc'):
-        # Baca file Word
         file_bytes = await file.read()
         doc = docx.Document(io.BytesIO(file_bytes))
         content = "\n".join([para.text for para in doc.paragraphs])
-    
     else:
         return {"error": "Format file gak didukung, King!"}
 
