@@ -10,3 +10,6 @@ cd react
 npm install
 # Run app
 npm run dev
+
+
+fill your own GEMINI API KEY

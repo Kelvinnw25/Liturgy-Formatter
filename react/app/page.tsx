@@ -7,7 +7,7 @@ export default function LiturgyPage() {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  //  function to handle file upload and read content
+  // function to handle file upload and read content
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -131,8 +131,8 @@ export default function LiturgyPage() {
             disabled={loading || !input}
             className={`w-full py-5 rounded-2xl font-black text-xl transition-all active:scale-[0.98] shadow-xl disabled:cursor-not-allowed text-white
               ${loading 
-                ? 'bg-orange-500' // PRIORITAS 1: Pas loading (Orange)
-                : (input ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-300') // PRIORITAS 2: Ada input (Ijo), Gak ada input (Abu-abu)
+                ? 'bg-orange-500' //Pas loading (Orange)
+                : (input ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-300') //Ada input (Ijo), Gak ada input (Abu-abu)
               }`}
           >
             {loading ? 'SABAR YEEE...' : 'GASKAN KING!!!'}
